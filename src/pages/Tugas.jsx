@@ -1,33 +1,34 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+function bacaDaftarTugas() {
+  try {
+    const data = JSON.parse(
+      localStorage.getItem('daftarTugas') || '[]'
+    );
+
+    if (!Array.isArray(data)) return [];
+
+    return data.map((task) => ({
+      id: task.id ?? Date.now() + Math.random(),
+      title: task.title ?? task.namaTugas ?? '',
+      status: task.status ?? 'Belum Selesai',
+      deadline: task.deadline ?? task.tanggal ?? '',
+      description: task.description ?? task.deskripsi ?? '',
+      priority: task.priority ?? 'Sedang',
+      waktu: task.waktu ?? '',
+    }));
+  } catch (error) {
+    console.error('Gagal membaca daftar tugas:', error);
+    return [];
+  }
+}
 
 export function Tugas(){
-  // 1. Data state tugas (dengan properti deskripsi & prioritas)
-  const [tasks, setTasks] = useState([
-    {
-      id: 1,
-      title: 'Membuat desain Wireframe',
-      status: 'Selesai',
-      deadline: '2026-10-18',
-      description: 'Buat wireframe low-fidelity untuk 3 halaman utama',
-      priority: 'Tinggi',
-    },
-    {
-      id: 2,
-      title: 'Membuat Komponen Papan Tugas',
-      status: 'Dalam Proses',
-      deadline: '2026-10-22',
-      description: 'Integrasi komponen React dengan Tailwind CSS',
-      priority: 'Sedang',
-    },
-    {
-      id: 3,
-      title: 'Testing integrasi fitur',
-      status: 'Belum Selesai',
-      deadline: '2026-10-25',
-      description: 'Cek seluruh alur pengubahan status dan modal edit',
-      priority: 'Rendah',
-    },
-  ]);
+  const navigate = useNavigate();
+
+  const [tasks, setTasks] = useState(bacaDaftarTugas);
+
 
   // State untuk Modal Edit
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -45,12 +46,23 @@ export function Tugas(){
   };
 
   const handleSaveEdit = (e) => {
-    e.preventDefault();
-    if (!currentTask.title.trim()) return;
+  e.preventDefault();
 
-    setTasks(tasks.map((task) => task.id === currentTask.id ? currentTask : task));
+  if (!currentTask.title.trim()) return;
+
+  setTasks((prevTasks) =>
+    prevTasks.map((task) =>
+      task.id === currentTask.id ? currentTask : task
+    )
+  );
+
     handleCloseModal();
   };
+
+  useEffect(() => {
+    localStorage.setItem('daftarTugas', JSON.stringify(tasks));
+  }, [tasks]);
+
 
   // --- FITUR UBAH STATUS TUGAS ---
   const handleStatusChange = (id, newStatus) => {
@@ -80,7 +92,13 @@ export function Tugas(){
     <div className="max-w-xl mx-auto p-4">
       <div className="flex justify-between items-center w-full">
         <h1 className="text-xl font-bold mb-4">Papan Daftar Tugas</h1>
-        <button className="bg-blue-600 text-white px-2 py-1 rounded text-xs hover:bg-blue-700">+Tambah</button>
+        <button
+          type="button"
+          onClick={() => navigate('/InputTugas')}
+          className="bg-blue-600 text-white px-2 py-1 rounded text-xs hover:bg-blue-700"
+        >
+          +Tambah
+        </button>
       </div>
       {/* DAFTAR TUGAS */}
       <div className="space-y-3">
