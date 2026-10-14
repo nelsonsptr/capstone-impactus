@@ -2,6 +2,12 @@ import { Link } from "react-router-dom";
 
 export function Header() {
     return (
+<<<<<<< HEAD
+        <header className="bg-slate-900 text-white flex justify-center items-center gap-6 sm:gap-10 p-4 sm:p-5 text-sm sm:text-base font-medium">
+            <Link to="/" className="hover:text-rose-400 transition-colors">Beranda</Link>
+            <Link to="/Tugas" className="hover:text-rose-400 transition-colors">Tugas</Link>
+            <Link to="/Timer" className="hover:text-rose-400 transition-colors">Timer</Link>
+=======
         <header className="bg-slate-900 text-white flex justify-center gap-10 p-5">
             <Link to="/">Beranda</Link>
             <Link to="/Tugas">Tugas</Link>
@@ -20,6 +26,7 @@ export function Header() {
                     </span>
                 </Link>
             </div>        
+>>>>>>> 5fbb9839f78054d0112dd31bfeea9a4fd27bccc6
         </header>
     )
 }
