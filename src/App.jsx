@@ -4,6 +4,7 @@ import { HashRouter as Router, Routes, Route } from 'react-router-dom'
 import { Beranda } from './pages/Beranda'
 import { Tugas } from './pages/Tugas'
 import { Timer } from './pages/Timer'
+import { Profil } from './pages/Profil'
 import {Layout} from './components/Layout'
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
           <Route path="/" element={<Beranda />} />
           <Route path="/Tugas" element={<Tugas />} />
           <Route path="/Timer" element={<Timer />} />
+          <Route path="/Profil" element={<Profil />} />
         </Route>
       </Routes>
     </Router>
