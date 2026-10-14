@@ -57,8 +57,7 @@ export function InputTugas() {
         'daftarTugas',
         JSON.stringify(dataBaru)
       );
-
-      setPesanPopup('Deadline tugas berhasil disimpan!');
+      navigate('/Tugas', { state: { pesan: 'Deadline tugas berhasil disimpan!' } });
     } catch (error) {
       console.error('Gagal menyimpan daftar tugas:', error);
       setPesanPopup('Tugas gagal disimpan. Silakan coba lagi.');
@@ -66,11 +65,7 @@ export function InputTugas() {
   }
 
   function handleBatal() {
-    setNamaTugas('');
-    setDeskripsi('');
-    setTanggal('');
-    setWaktu('');
-    setPesanPopup('Input deadline berhasil dibatalkan.');
+    navigate('/Tugas', { state: { pesan: 'Input deadline berhasil dibatalkan.' } });
   }
 
   function tutupPopup() {
