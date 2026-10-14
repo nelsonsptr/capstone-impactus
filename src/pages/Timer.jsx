@@ -115,30 +115,30 @@ export function Timer() {
     const theme = getThemeStyles();
 
     return (
-        <div className="flex flex-col items-center justify-center p-4 transition-colors duration-500 w-full">
+        <div className="flex flex-col items-center justify-center p-2 sm:p-4 transition-colors duration-500 w-full">
 
             {/* Container Utama Kartu Timer */}
-            <div className={`w-full max-w-lg ${theme.bgCard} border rounded-3xl p-8 backdrop-blur-md shadow-2xl flex flex-col items-center transition-all duration-500`}>
+            <div className={`w-full max-w-lg ${theme.bgCard} border rounded-3xl p-5 sm:p-8 backdrop-blur-md shadow-2xl flex flex-col items-center transition-all duration-500`}>
 
                 {/* Navigasi 3 Mode */}
-                <div className="flex bg-slate-900/80 p-1.5 rounded-2xl mb-8 w-full border border-slate-800/80">
+                <div className="flex bg-slate-900/80 p-1 sm:p-1.5 rounded-2xl mb-6 sm:mb-8 w-full border border-slate-800/80">
                     <button
                         onClick={() => handleModeChange("pomodoro")}
-                        className={`flex-1 py-2 text-sm font-semibold rounded-xl transition-all duration-300 ${mode === "pomodoro" ? theme.btnActive : "text-slate-400 hover:text-slate-200"
+                        className={`flex-1 py-1.5 sm:py-2 px-1 text-xs sm:text-sm font-semibold rounded-xl transition-all duration-300 ${mode === "pomodoro" ? theme.btnActive : "text-slate-400 hover:text-slate-200"
                             }`}
                     >
                         Pomodoro
                     </button>
                     <button
                         onClick={() => handleModeChange("shortBreak")}
-                        className={`flex-1 py-2 text-sm font-semibold rounded-xl transition-all duration-300 ${mode === "shortBreak" ? theme.btnActive : "text-slate-400 hover:text-slate-200"
+                        className={`flex-1 py-1.5 sm:py-2 px-1 text-xs sm:text-sm font-semibold rounded-xl transition-all duration-300 ${mode === "shortBreak" ? theme.btnActive : "text-slate-400 hover:text-slate-200"
                             }`}
                     >
                         Short Break
                     </button>
                     <button
                         onClick={() => handleModeChange("longBreak")}
-                        className={`flex-1 py-2 text-sm font-semibold rounded-xl transition-all duration-300 ${mode === "longBreak" ? theme.btnActive : "text-slate-400 hover:text-slate-200"
+                        className={`flex-1 py-1.5 sm:py-2 px-1 text-xs sm:text-sm font-semibold rounded-xl transition-all duration-300 ${mode === "longBreak" ? theme.btnActive : "text-slate-400 hover:text-slate-200"
                             }`}
                     >
                         Long Break
@@ -146,15 +146,15 @@ export function Timer() {
                 </div>
 
                 {/* Angka Timer Utama */}
-                <div className="text-7xl md:text-8xl font-mono font-extrabold tracking-tight my-4 text-white drop-shadow-md">
+                <div className="text-6xl sm:text-7xl md:text-8xl font-mono font-extrabold tracking-tight my-2 sm:my-4 text-white drop-shadow-md">
                     {formatTime(timeLeft)}
                 </div>
 
                 {/* Kontrol Utama: Start & Skip */}
-                <div className="flex items-center justify-center gap-4 mt-6 w-full">
+                <div className="flex items-center justify-center gap-3 sm:gap-4 mt-4 sm:mt-6 w-full">
                     <button
                         onClick={handleStartPause}
-                        className={`px-10 py-4 text-xl font-black rounded-2xl shadow-lg transition-transform active:scale-95 uppercase tracking-wider ${theme.btnStart}`}
+                        className={`px-8 sm:px-10 py-3 sm:py-4 text-lg sm:text-xl font-black rounded-2xl shadow-lg transition-transform active:scale-95 uppercase tracking-wider ${theme.btnStart}`}
                     >
                         {isRunning ? "PAUSE" : "START"}
                     </button>
@@ -164,11 +164,11 @@ export function Timer() {
                         <button
                             onClick={handleSkip}
                             title="Skip ke sesi berikutnya"
-                            className="p-4 bg-slate-800/80 hover:bg-slate-700 text-slate-200 rounded-2xl border border-slate-700 transition-all active:scale-95"
+                            className="p-3 sm:p-4 bg-slate-800/80 hover:bg-slate-700 text-slate-200 rounded-2xl border border-slate-700 transition-all active:scale-95"
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                className="h-7 w-7"
+                                className="h-6 w-6 sm:h-7 sm:w-7"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"

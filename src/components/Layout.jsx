@@ -5,7 +5,7 @@ export function Layout() {
     return (
         <>
             <Header />
-            <main className="container mx-auto p-5">
+            <main className="container mx-auto p-3 sm:p-5">
                 <Outlet />
             </main>
         </>
