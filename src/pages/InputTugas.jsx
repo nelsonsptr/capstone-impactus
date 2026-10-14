@@ -1,65 +1,84 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import './InputTugas.css'
+
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './InputTugas.css';
 
 export function InputTugas() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const [namaTugas, setNamaTugas] = useState('')
-  const [deskripsi, setDeskripsi] = useState('')
-  const [tanggal, setTanggal] = useState('')
-  const [waktu, setWaktu] = useState('')
-  const [pesanPopup, setPesanPopup] = useState('')
+  const [namaTugas, setNamaTugas] = useState('');
+  const [deskripsi, setDeskripsi] = useState('');
+  const [tanggal, setTanggal] = useState('');
+  const [waktu, setWaktu] = useState('');
+  const [pesanPopup, setPesanPopup] = useState('');
 
-function handleSimpan(e) {
-  e.preventDefault()
+  function handleSimpan(e) {
+    e.preventDefault();
 
-  if (!namaTugas.trim() || !tanggal || !waktu) {
-    setPesanPopup(
-      'Nama tugas, tanggal dan waktu deadline wajib diisi.'
-    )
-    return
+    if (!namaTugas.trim() || !tanggal || !waktu) {
+      setPesanPopup(
+        'Nama tugas, tanggal dan waktu deadline wajib diisi.'
+      );
+      return;
+    }
+
+    let dataLama = [];
+
+    try {
+      const tersimpan = JSON.parse(
+        localStorage.getItem('daftarTugas') || '[]'
+      );
+
+      if (Array.isArray(tersimpan)) {
+        dataLama = tersimpan;
+      }
+    } catch (error) {
+      console.error('Gagal membaca daftar tugas:', error);
+      setPesanPopup(
+        'Data tugas gagal dibaca. Silakan periksa penyimpanan browser.'
+      );
+      return;
+    }
+
+    const tugasBaru = {
+      id: Date.now(),
+      title: namaTugas.trim(),
+      status: 'Belum Selesai',
+      deadline: tanggal,
+      description: deskripsi.trim(),
+      priority: 'Sedang',
+      waktu: waktu,
+    };
+
+    const dataBaru = [...dataLama, tugasBaru];
+
+    try {
+      localStorage.setItem(
+        'daftarTugas',
+        JSON.stringify(dataBaru)
+      );
+
+      setPesanPopup('Deadline tugas berhasil disimpan!');
+    } catch (error) {
+      console.error('Gagal menyimpan daftar tugas:', error);
+      setPesanPopup('Tugas gagal disimpan. Silakan coba lagi.');
+    }
   }
 
- const tugasBaru = {
-  id: Date.now(),
-  title: namaTugas.trim(),
-  status: 'Belum Selesai',
-  deadline: tanggal,
-  description: deskripsi.trim(),
-  priority: 'Sedang',
-  waktu: waktu
-}
-
-  const dataLama = JSON.parse(
-    localStorage.getItem('daftarTugas') || '[]'
-  )
-
-  const dataBaru = [...dataLama, tugasBaru]
-
-  localStorage.setItem(
-    'daftarTugas',
-    JSON.stringify(dataBaru)
-  )
-
-  setPesanPopup('Deadline tugas berhasil disimpan!')
-}
-
   function handleBatal() {
-    setNamaTugas('')
-    setDeskripsi('')
-    setTanggal('')
-    setWaktu('')
-    setPesanPopup('Input deadline berhasil dibatalkan.')
+    setNamaTugas('');
+    setDeskripsi('');
+    setTanggal('');
+    setWaktu('');
+    setPesanPopup('Input deadline berhasil dibatalkan.');
   }
 
   function tutupPopup() {
-    setPesanPopup('')
+    setPesanPopup('');
   }
 
   return (
     <section className="input-tugas-page">
-      {/* Subheader */}
       <header className="input-tugas-header">
         <h1>Deadline Tugas</h1>
         <p>
@@ -67,7 +86,6 @@ function handleSimpan(e) {
         </p>
       </header>
 
-      {/* Tombol daftar tugas */}
       <div className="input-tugas-top-action">
         <button
           type="button"
@@ -78,7 +96,6 @@ function handleSimpan(e) {
         </button>
       </div>
 
-      {/* Form deadline */}
       <form className="input-tugas-form" onSubmit={handleSimpan}>
         <div className="input-tugas-field">
           <label htmlFor="namaTugas">Nama Tugas</label>
@@ -113,9 +130,7 @@ function handleSimpan(e) {
         </div>
 
         <div className="input-tugas-field">
-          <label htmlFor="waktuDeadline">
-            Waktu Deadline
-          </label>
+          <label htmlFor="waktuDeadline">Waktu Deadline</label>
           <input
             id="waktuDeadline"
             type="time"
@@ -124,7 +139,6 @@ function handleSimpan(e) {
           />
         </div>
 
-        {/* Tombol form */}
         <div className="input-tugas-actions">
           <button type="submit" className="input-tugas-save">
             Simpan
@@ -140,7 +154,6 @@ function handleSimpan(e) {
         </div>
       </form>
 
-      {/* Popup */}
       {pesanPopup && (
         <div className="input-tugas-overlay">
           <div
@@ -158,5 +171,5 @@ function handleSimpan(e) {
         </div>
       )}
     </section>
-  )
+  );
 }
