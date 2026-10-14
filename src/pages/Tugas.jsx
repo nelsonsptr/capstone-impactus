@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 function bacaDaftarTugas() {
   try {
@@ -26,8 +26,19 @@ function bacaDaftarTugas() {
 
 export function Tugas(){
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [tasks, setTasks] = useState(bacaDaftarTugas);
+  const [pesanPopup, setPesanPopup] = useState('');
+
+  // Tampilkan notifikasi yang dikirim dari halaman lain (misal InputTugas)
+  useEffect(() => {
+    if (location.state?.pesan) {
+      setPesanPopup(location.state.pesan);
+      // Bersihkan state agar tidak muncul lagi saat refresh
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
 
   // State untuk Modal Edit
@@ -267,6 +278,29 @@ export function Tugas(){
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Popup Notifikasi */}
+      {pesanPopup && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div
+            className="bg-white rounded-lg p-5 w-full max-w-xs shadow-lg border border-gray-200"
+            role="dialog"
+            aria-modal="true"
+          >
+            <h2 className="text-base font-bold text-gray-800 mb-2">Pemberitahuan</h2>
+            <p className="text-sm text-gray-600 mb-4">{pesanPopup}</p>
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={() => setPesanPopup('')}
+                className="px-4 py-1.5 bg-blue-600 text-white rounded text-xs font-medium hover:bg-blue-700"
+              >
+                Oke
+              </button>
+            </div>
           </div>
         </div>
       )}
