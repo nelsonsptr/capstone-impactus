@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
-// Impor komponen Ice Breaking milik Anggota 4 (sesuaikan path jika berbeda)
-import IceBreaking from "../components/IceBreaking";
+// Impor komponen Ice Breaking milik Anggota 4 (aktifkan jika file IceBreaking.jsx sudah dibuat di src/components/)
+// import IceBreaking from "../components/IceBreaking";
+const IceBreaking = null; // Mencegah crash sebelum file dibuat oleh Anggota 4
 
-export default function Timer() {
+// Export function Timer agar kompatibel dengan: import { Timer } from './pages/Timer' di App.jsx
+export function Timer() {
     // Durasi dalam detik: Pomodoro (25m), Short Break (5m), Long Break (20m)
     const DURATIONS = {
         pomodoro: 25 * 60,
@@ -113,7 +115,7 @@ export default function Timer() {
     const theme = getThemeStyles();
 
     return (
-        <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-4 transition-colors duration-500">
+        <div className="flex flex-col items-center justify-center p-4 transition-colors duration-500 w-full">
 
             {/* Container Utama Kartu Timer */}
             <div className={`w-full max-w-lg ${theme.bgCard} border rounded-3xl p-8 backdrop-blur-md shadow-2xl flex flex-col items-center transition-all duration-500`}>
@@ -202,7 +204,7 @@ export default function Timer() {
             {(mode === "shortBreak" || mode === "longBreak") && (
                 <div className="w-full max-w-lg mt-6">
                     {/* Komponen dari Anggota 4 */}
-                    {typeof IceBreaking !== "undefined" ? (
+                    {typeof IceBreaking !== "undefined" && IceBreaking ? (
                         <IceBreaking />
                     ) : (
                         <div className="p-4 bg-slate-900 border border-slate-800 rounded-2xl text-center text-slate-400 text-sm">
@@ -215,3 +217,6 @@ export default function Timer() {
         </div>
     );
 }
+
+// Default export agar kompatibel dengan cara import apa pun
+export default Timer;
