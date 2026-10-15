@@ -1,24 +1,18 @@
 import React, { useState, useEffect } from "react";
-// Impor komponen Ice Breaking milik Anggota 4 (aktifkan jika file IceBreaking.jsx sudah dibuat di src/components/)
-// import IceBreaking from "../components/IceBreaking";
-const IceBreaking = null; // Mencegah crash sebelum file dibuat oleh Anggota 4
+import IceBreaking from "../components/IceBreaking";
 
-// Export function Timer agar kompatibel dengan: import { Timer } from './pages/Timer' di App.jsx
 export function Timer() {
-    // Durasi dalam detik: Pomodoro (25m), Short Break (5m), Long Break (20m)
     const DURATIONS = {
         pomodoro: 25 * 60,
         shortBreak: 5 * 60,
         longBreak: 20 * 60,
     };
 
-    const [mode, setMode] = useState("pomodoro"); // 'pomodoro' | 'shortBreak' | 'longBreak'
+    const [mode, setMode] = useState("pomodoro");
     const [timeLeft, setTimeLeft] = useState(DURATIONS.pomodoro);
     const [isRunning, setIsRunning] = useState(false);
-    const [hasStarted, setHasStarted] = useState(false); // Menandai apakah timer sudah pernah dijalankan
-    const [pomodoroCount, setPomodoroCount] = useState(0); // Counter siklus Pomodoro
-
-    // Countdown Effect
+    const [hasStarted, setHasStarted] = useState(false);
+    const [pomodoroCount, setPomodoroCount] = useState(0);
     useEffect(() => {
         let timer = null;
         if (isRunning && timeLeft > 0) {
@@ -26,40 +20,32 @@ export function Timer() {
                 setTimeLeft((prev) => prev - 1);
             }, 1000);
         } else if (timeLeft === 0 && isRunning) {
-            // Ketika waktu habis secara alami
             handleNextMode();
         }
         return () => clearInterval(timer);
     }, [isRunning, timeLeft]);
 
-    // Logika berpindah mode & penanganan siklus 4x
     const handleNextMode = () => {
         if (mode === "pomodoro") {
             const nextCount = pomodoroCount + 1;
             setPomodoroCount(nextCount);
 
             if (nextCount >= 4) {
-                // Jika sudah 4 kali Pomodoro -> Masuk Long Break
                 setMode("longBreak");
                 setTimeLeft(DURATIONS.longBreak);
-                setPomodoroCount(0); // Reset counter
+                setPomodoroCount(0);
             } else {
-                // Belum 4 kali -> Masuk Short Break
                 setMode("shortBreak");
                 setTimeLeft(DURATIONS.shortBreak);
             }
         } else {
-            // Dari Short Break atau Long Break -> Kembali ke Pomodoro
             setMode("pomodoro");
             setTimeLeft(DURATIONS.pomodoro);
         }
 
-        // Auto-start pada mode berikutnya
         setIsRunning(true);
         setHasStarted(true);
     };
-
-    // Pindah mode manual lewat tab atas
     const handleModeChange = (newMode) => {
         setIsRunning(false);
         setHasStarted(false);
@@ -67,25 +53,20 @@ export function Timer() {
         setTimeLeft(DURATIONS[newMode]);
     };
 
-    // Tombol Start / Pause
     const handleStartPause = () => {
         setIsRunning(!isRunning);
         if (!hasStarted) setHasStarted(true);
     };
-
-    // Tombol Skip
     const handleSkip = () => {
         handleNextMode();
     };
 
-    // Format detik ke format MM:SS
     const formatTime = (seconds) => {
         const mins = Math.floor(seconds / 60);
         const secs = seconds % 60;
         return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
     };
 
-    // Tema warna dinamis berdasarkan mode aktif
     const getThemeStyles = () => {
         switch (mode) {
             case "shortBreak":
@@ -102,7 +83,7 @@ export function Timer() {
                     accentColor: "text-sky-400",
                     btnStart: "bg-sky-500 hover:bg-sky-400 text-sky-950",
                 };
-            default: // pomodoro
+            default:
                 return {
                     bgCard: "bg-rose-950/60 border-rose-800/50",
                     btnActive: "bg-rose-600 text-white",
