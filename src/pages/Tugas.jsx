@@ -31,6 +31,10 @@ export function Tugas(){
   const [tasks, setTasks] = useState(bacaDaftarTugas);
   const [pesanPopup, setPesanPopup] = useState('');
 
+  // --- STATE UNTUK FITUR FILTER ---
+  const [filterStatus, setFilterStatus] = useState('Semua');
+  const [filterPriority, setFilterPriority] = useState('Semua');
+
   // Tampilkan notifikasi yang dikirim dari halaman lain (misal InputTugas)
   useEffect(() => {
     if (location.state?.pesan) {
@@ -40,8 +44,7 @@ export function Tugas(){
     }
   }, [location.state]);
 
-
-  // State untuk Modal Edit
+  // --- STATE UNTUK MODAL EDIT ---
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentTask, setCurrentTask] = useState(null);
 
@@ -57,15 +60,15 @@ export function Tugas(){
   };
 
   const handleSaveEdit = (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!currentTask.title.trim()) return;
+    if (!currentTask.title.trim()) return;
 
-  setTasks((prevTasks) =>
-    prevTasks.map((task) =>
-      task.id === currentTask.id ? currentTask : task
-    )
-  );
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === currentTask.id ? currentTask : task
+      )
+    );
 
     handleCloseModal();
   };
@@ -74,10 +77,9 @@ export function Tugas(){
     localStorage.setItem('daftarTugas', JSON.stringify(tasks));
   }, [tasks]);
 
-
   // --- FITUR UBAH STATUS TUGAS ---
   const handleStatusChange = (id, newStatus) => {
-  setTasks(tasks.map((task) => task.id === id ? { ...task, status: newStatus } : task));
+    setTasks(tasks.map((task) => task.id === id ? { ...task, status: newStatus } : task));
   };
 
   // --- FITUR HAPUS TUGAS ---
@@ -99,24 +101,63 @@ export function Tugas(){
     }
   };
 
+  // --- LOGIKA FILTER TUGAS ---
+  const filteredTasks = tasks.filter((task) => {
+    const matchStatus = filterStatus === 'Semua' || task.status === filterStatus;
+    const matchPriority = filterPriority === 'Semua' || task.priority === filterPriority;
+    return matchStatus && matchPriority;
+  });
+
   return (
     <div className="max-w-xl mx-auto p-4">
-      <div className="flex justify-between items-center w-full">
-        <h1 className="text-xl font-bold mb-4">Papan Daftar Tugas</h1>
+      {/* Header & Tombol Tambah */}
+      <div className="flex justify-between items-center w-full mb-4">
+        <h1 className="text-xl font-bold">Papan Daftar Tugas</h1>
         <button
           type="button"
           onClick={() => navigate('/InputTugas')}
-          className="bg-blue-600 text-white px-2 py-1 rounded text-xs hover:bg-blue-700"
+          className="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-medium hover:bg-blue-700 transition-colors"
         >
-          +Tambah
+          + Tambah Tugas
         </button>
       </div>
+
+      {/* --- BARIS FILTER TUGAS --- */}
+      <div className="bg-gray-50 border border-gray-200 p-3 rounded mb-4 flex flex-wrap gap-3 items-center justify-between">
+        <span className="text-xs font-semibold text-gray-600">Filter Tugas:</span>
+        <div className="flex gap-2">
+          {/* Filter Status */}
+          <select
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+            className="border border-gray-300 p-1.5 rounded text-xs bg-white text-gray-700 cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-500"
+          >
+            <option value="Semua">Status: Semua</option>
+            <option value="Belum Selesai">Belum Selesai</option>
+            <option value="Dalam Proses">Dalam Proses</option>
+            <option value="Selesai">Selesai</option>
+          </select>
+
+          {/* Filter Prioritas */}
+          <select
+            value={filterPriority}
+            onChange={(e) => setFilterPriority(e.target.value)}
+            className="border border-gray-300 p-1.5 rounded text-xs bg-white text-gray-700 cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-500"
+          >
+            <option value="Semua">Prioritas: Semua</option>
+            <option value="Tinggi">Tinggi</option>
+            <option value="Sedang">Sedang</option>
+            <option value="Rendah">Rendah</option>
+          </select>
+        </div>
+      </div>
+
       {/* DAFTAR TUGAS */}
       <div className="space-y-3">
-        {tasks.map((task) => (
+        {filteredTasks.map((task) => (
           <div
             key={task.id}
-            className="p-3 border border-gray-200 rounded bg-white space-y-2"
+            className="p-3 border border-gray-200 rounded bg-white space-y-2 shadow-sm hover:shadow transition-shadow"
           >
             {/* Header Tugas: Badge Prioritas, Judul, & Tombol Aksi */}
             <div className="flex items-start justify-between gap-2">
@@ -150,7 +191,7 @@ export function Tugas(){
               <div className="flex items-center gap-1.5 shrink-0">
                 <button
                   onClick={() => handleOpenEditModal(task)}
-                  className="bg-amber-500 text-white px-2 py-1 rounded text-xs hover:bg-amber-600"
+                  className="bg-amber-500 text-white px-2 py-1 rounded text-xs hover:bg-amber-600 transition-colors"
                 >
                   Edit
                 </button>
@@ -167,7 +208,7 @@ export function Tugas(){
 
                 <button
                   onClick={() => handleDeleteTask(task.id)}
-                  className="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600"
+                  className="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600 transition-colors"
                 >
                   Hapus
                 </button>
@@ -181,10 +222,15 @@ export function Tugas(){
           </div>
         ))}
 
-        {tasks.length === 0 && (
-          <p className="text-center text-gray-400 text-sm py-4">
-            Belum ada tugas.
-          </p>
+        {/* Jika Tidak Ada Tugas yang Cocok */}
+        {filteredTasks.length === 0 && (
+          <div className="text-center py-8 border border-dashed border-gray-300 rounded">
+            <p className="text-gray-400 text-sm">
+              {tasks.length === 0
+                ? 'Belum ada tugas.'
+                : 'Tidak ada tugas yang sesuai dengan filter ini.'}
+            </p>
+          </div>
         )}
       </div>
 
