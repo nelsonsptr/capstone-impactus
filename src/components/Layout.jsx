@@ -1,13 +1,16 @@
+
 import { Header } from "./Header";
 import { Outlet } from "react-router-dom";
+import "./Layout.css";
 
 export function Layout() {
-    return (
-        <>
-            <Header />
-            <main className="container mx-auto p-3 sm:p-5">
-                <Outlet />
-            </main>
-        </>
-    )
+  return (
+    <div className="app-layout">
+      <Header />
+
+      <main className="app-main">
+        <Outlet />
+      </main>
+    </div>
+  );
 }

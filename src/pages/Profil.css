@@ -1,0 +1,176 @@
+
+/* Halaman profil */
+.profil-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 16px;
+  color: var(--color-text);
+}
+
+/* Kartu utama profil */
+.profil-card {
+  width: 100%;
+  max-width: 768px;
+  padding: 32px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+
+/* Bagian identitas */
+.profil-header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 32px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* Bulatan avatar */
+.profil-avatar {
+  display: flex;
+  flex-shrink: 0;
+  width: 112px;
+  height: 112px;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid #fecaca;
+  border-radius: 50%;
+  background-color: #dc2626;
+  color: #ffffff;
+  font-size: 36px;
+  font-weight: 700;
+}
+
+/* Nama dan deskripsi */
+.profil-identity {
+  min-width: 0;
+  flex: 1;
+}
+
+.profil-name {
+  margin: 0 0 8px;
+  color: var(--color-primary);
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.profil-description {
+  margin: 0;
+  color: var(--color-text-muted);
+  line-height: 1.7;
+}
+
+/* Judul bagian */
+.profil-section-title {
+  margin: 0 0 16px;
+  color: var(--color-primary);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* Daftar informasi */
+.profil-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.profil-info-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-input);
+  background-color: #f8fafc;
+}
+
+.profil-info-label {
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+.profil-info-value {
+  color: var(--color-text);
+  font-weight: 600;
+  text-align: right;
+}
+
+/* Kartu statistik */
+.profil-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.profil-stat-card {
+  padding: 18px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-input);
+  background-color: var(--color-primary-light);
+  text-align: center;
+}
+
+.profil-stat-value {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--color-primary);
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.profil-stat-label {
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
+
+/* Responsif */
+@media (max-width: 600px) {
+  .profil-page {
+    padding: 8px;
+  }
+
+  .profil-card {
+    padding: 20px;
+  }
+
+  .profil-header {
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    text-align: center;
+  }
+
+  .profil-avatar {
+    width: 88px;
+    height: 88px;
+    font-size: 30px;
+  }
+
+  .profil-name {
+    font-size: 21px;
+  }
+
+  .profil-stats {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .profil-info-item {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .profil-info-value {
+    text-align: left;
+    overflow-wrap: anywhere;
+  }
+}

@@ -1,11 +1,9 @@
 .input-tugas-page {
   width: 100%;
   max-width: 800px;
-  margin: 36px auto;
-  padding: 0 24px 32px;
-  box-sizing: border-box;
-  color: #1e2e4f;
-  font-family: Arial, sans-serif;
+  margin: 0 auto;
+  padding: 32px 24px 40px;
+  color: var(--color-text, #1e2e4f);
 }
 
 .input-tugas-header {
@@ -14,46 +12,50 @@
 }
 
 .input-tugas-header h1 {
-  margin: 0 0 12px;
-  color: #1e2e4f;
-  font-size: 32px;
-  font-weight: 700;
+  margin: 0;
+  color: var(--color-primary, #1e2e4f);
+  font-size: clamp(1.7rem, 4vw, 2.2rem);
+  font-weight: 800;
   line-height: 1.3;
 }
 
 .input-tugas-header p {
-  margin: 0;
-  color: #64748b;
-  font-size: 15px;
-  line-height: 1.7;
+  margin: 10px 0 0;
+  color: var(--color-text-muted, #64748b);
+  font-size: 0.95rem;
+  line-height: 1.6;
 }
 
 .input-tugas-top-action {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .input-tugas-list-button {
-  padding: 11px 16px;
-  border: 1px solid #cbdcf0;
-  border-radius: 10px;
-  background-color: #edf5ff;
-  color: #1e2e4f;
-  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  border: 1px solid var(--color-border, #e2eaf4);
+  border-radius: var(--radius-button, 12px);
+  background-color: var(--color-surface, #ffffff);
+  color: var(--color-primary, #1e2e4f);
+  font-size: 0.875rem;
   font-weight: 600;
-  cursor: pointer;
   transition:
     background-color 0.2s ease,
-    color 0.2s ease,
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+    border-color 0.2s ease;
 }
 
 .input-tugas-list-button:hover {
-  background-color: #d8e9ff;
-  box-shadow: 0 4px 10px rgba(30, 46, 79, 0.1);
-  transform: translateY(-2px);
+  border-color: var(--color-accent, #5279ad);
+  background-color: var(--color-primary-light, #eaf0f8);
+}
+
+.input-tugas-list-button:focus-visible {
+  outline: 3px solid rgb(82 121 173 / 30%);
+  outline-offset: 2px;
 }
 
 .input-tugas-form {
@@ -61,10 +63,10 @@
   flex-direction: column;
   gap: 20px;
   padding: 28px;
-  border: 1px solid #e2eaf4;
-  border-radius: 16px;
-  background-color: #ffffff;
-  box-shadow: 0 6px 22px rgba(30, 46, 79, 0.06);
+  border: 1px solid var(--color-border, #e2eaf4);
+  border-radius: var(--radius-card, 16px);
+  background-color: var(--color-surface, #ffffff);
+  box-shadow: var(--shadow-card, 0 4px 16px rgb(30 46 79 / 8%));
 }
 
 .input-tugas-field {
@@ -74,98 +76,135 @@
 }
 
 .input-tugas-field label {
-  color: #1e2e4f;
-  font-size: 14px;
-  font-weight: 600;
+  color: var(--color-primary, #1e2e4f);
+  font-size: 0.9rem;
+  font-weight: 700;
 }
 
 .input-tugas-field input,
-.input-tugas-field textarea {
+.input-tugas-field textarea,
+.input-tugas-field select {
+  display: block;
   width: 100%;
-  box-sizing: border-box;
-  padding: 12px 14px;
-  border: 1px solid #d8e1ed;
-  border-radius: 10px;
-  background-color: #f9fbfe;
-  color: #1e2e4f;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border, #e2eaf4);
+  border-radius: var(--radius-input, 10px);
+  background-color: var(--color-surface, #ffffff);
+  color: var(--color-text, #1e2e4f);
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  outline: none;
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease,
     background-color 0.2s ease;
 }
 
-.input-tugas-field input {
-  min-height: 46px;
-}
-
-.input-tugas-field textarea {
-  min-height: 120px;
-  resize: vertical;
-  line-height: 1.6;
-}
-
-.input-tugas-field input:focus,
-.input-tugas-field textarea:focus {
-  outline: none;
-  border-color: #6d9fd6;
-  background-color: #ffffff;
-  box-shadow: 0 0 0 3px rgba(109, 159, 214, 0.18);
-}
+/* Placeholder */
 
 .input-tugas-field input::placeholder,
 .input-tugas-field textarea::placeholder {
-  color: #9aa7b8;
+  color: #94a3b8;
+  opacity: 1;
+}
+
+/* Textarea */
+
+.input-tugas-field textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+/* Dropdown status/prioritas */
+
+.input-tugas-field select {
+  padding-right: 36px;
+  cursor: pointer;
+}
+
+/* Fokus untuk semua kontrol */
+
+.input-tugas-field input:focus,
+.input-tugas-field textarea:focus,
+.input-tugas-field select:focus {
+  border-color: var(--color-accent, #5279ad);
+  box-shadow: 0 0 0 3px rgb(82 121 173 / 15%);
+}
+
+/* Hover */
+
+.input-tugas-field input:hover:not(:focus),
+.input-tugas-field textarea:hover:not(:focus),
+.input-tugas-field select:hover:not(:focus) {
+  border-color: #b7c8df;
+}
+
+/* Opsi dropdown */
+
+.input-tugas-field select option {
+  background-color: var(--color-surface, #ffffff);
+  color: var(--color-text, #1e2e4f);
 }
 
 .input-tugas-actions {
   display: flex;
+  justify-content: flex-end;
   gap: 12px;
-  margin-top: 4px;
+  margin-top: 8px;
+  padding-top: 20px;
+  border-top: 1px solid var(--color-border, #e2eaf4);
 }
 
-.input-tugas-actions button {
-  flex: 1;
-  min-height: 46px;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 10px;
-  font-size: 14px;
+.input-tugas-save,
+.input-tugas-cancel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 110px;
+  min-height: 44px;
+  padding: 10px 20px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-button, 12px);
+  font-family: inherit;
+  font-size: 0.9rem;
   font-weight: 700;
-  cursor: pointer;
   transition:
     background-color 0.2s ease,
     color 0.2s ease,
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+    border-color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .input-tugas-save {
-  background-color: #1e2e4f;
+  background-color: var(--color-primary, #1e2e4f);
   color: #ffffff;
 }
 
 .input-tugas-save:hover {
-  background-color: #304a75;
-  box-shadow: 0 5px 12px rgba(30, 46, 79, 0.2);
-  transform: translateY(-2px);
+  background-color: var(--color-primary-hover, #304a75);
 }
 
 .input-tugas-cancel {
-  background-color: #fce8ef;
-  color: #9d4564;
+  border-color: var(--color-border, #e2eaf4);
+  background-color: var(--color-surface, #ffffff);
+  color: var(--color-primary, #1e2e4f);
 }
 
 .input-tugas-cancel:hover {
-  background-color: #f5ccdc;
-  box-shadow: 0 5px 12px rgba(157, 69, 100, 0.12);
-  transform: translateY(-2px);
+  background-color: var(--color-primary-light, #eaf0f8);
 }
 
-.input-tugas-actions button:active,
-.input-tugas-list-button:active {
-  transform: translateY(0);
+.input-tugas-save:active,
+.input-tugas-cancel:active {
+  transform: scale(0.98);
+}
+
+.input-tugas-save:focus-visible,
+.input-tugas-cancel:focus-visible {
+  outline: 3px solid rgb(82 121 173 / 30%);
+  outline-offset: 2px;
 }
 
 .input-tugas-overlay {
@@ -176,73 +215,141 @@
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background-color: rgba(20, 32, 53, 0.5);
+  background-color: rgb(15 23 42 / 50%);
+  backdrop-filter: blur(3px);
 }
 
 .input-tugas-popup {
   width: 100%;
-  max-width: 380px;
-  box-sizing: border-box;
+  max-width: 400px;
   padding: 28px;
-  border-radius: 18px;
-  background-color: #ffffff;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-  color: #1e2e4f;
+  border: 1px solid var(--color-border, #e2eaf4);
+  border-radius: var(--radius-card, 16px);
+  background-color: var(--color-surface, #ffffff);
+  box-shadow: 0 16px 48px rgb(30 46 79 / 18%);
   text-align: center;
+  animation: input-tugas-popup-in 0.2s ease-out;
 }
 
 .input-tugas-popup h2 {
-  margin: 0 0 12px;
-  font-size: 22px;
+  margin: 0;
+  color: var(--color-primary, #1e2e4f);
+  font-size: 1.25rem;
+  font-weight: 800;
 }
 
 .input-tugas-popup p {
-  margin: 0 0 24px;
-  color: #64748b;
-  font-size: 14px;
+  margin: 14px 0 22px;
+  color: var(--color-text-muted, #64748b);
+  font-size: 0.95rem;
   line-height: 1.7;
+  overflow-wrap: anywhere;
 }
 
 .input-tugas-popup button {
-  min-width: 120px;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 10px;
-  background-color: #1e2e4f;
+  min-width: 100px;
+  padding: 10px 22px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-button, 12px);
+  background-color: var(--color-primary, #1e2e4f);
   color: #ffffff;
-  font-weight: 600;
-  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
   transition: background-color 0.2s ease;
 }
 
 .input-tugas-popup button:hover {
-  background-color: #304a75;
+  background-color: var(--color-primary-hover, #304a75);
 }
 
-@media (max-width: 600px) {
+.input-tugas-popup button:focus-visible {
+  outline: 3px solid rgb(82 121 173 / 30%);
+  outline-offset: 3px;
+}
+
+@keyframes input-tugas-popup-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 640px) {
   .input-tugas-page {
-    margin: 24px auto;
-    padding: 0 16px 24px;
+    padding: 24px 16px 32px;
   }
 
-  .input-tugas-header h1 {
-    font-size: 26px;
-  }
-
-  .input-tugas-header p {
-    font-size: 14px;
+  .input-tugas-header {
+    margin-bottom: 20px;
   }
 
   .input-tugas-form {
-    padding: 20px 16px;
     gap: 18px;
+    padding: 22px 18px;
   }
 
-  .input-tugas-actions {
-    flex-direction: column;
+  .input-tugas-top-action {
+    justify-content: stretch;
   }
 
   .input-tugas-list-button {
     width: 100%;
+  }
+}
+
+@media (max-width: 420px) {
+  .input-tugas-page {
+    padding: 20px 12px 28px;
+  }
+
+  .input-tugas-form {
+    gap: 16px;
+    padding: 18px 14px;
+  }
+
+  .input-tugas-field label {
+    font-size: 0.85rem;
+  }
+
+  .input-tugas-field input,
+  .input-tugas-field textarea,
+  .input-tugas-field select {
+    font-size: 0.9rem;
+  }
+
+  .input-tugas-actions {
+    flex-direction: column-reverse;
+    gap: 10px;
+  }
+
+  .input-tugas-save,
+  .input-tugas-cancel {
+    width: 100%;
+  }
+
+  .input-tugas-popup {
+    padding: 24px 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .input-tugas-field input,
+  .input-tugas-field textarea,
+  .input-tugas-field select,
+  .input-tugas-save,
+  .input-tugas-cancel,
+  .input-tugas-list-button,
+  .input-tugas-popup button {
+    transition: none;
+  }
+
+  .input-tugas-popup {
+    animation: none;
   }
 }
