@@ -1,19 +1,103 @@
-# React + Vite
+# 📚 Impactus — Ruang Belajar & Fokus
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> Aplikasi web manajemen tugas dan produktivitas belajar berbasis teknik Pomodoro, dibangun oleh **Tim Impactus** sebagai proyek Capstone.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🌟 Tentang Proyek
 
-## React Compiler
+Aplikasi ini berupa web yang dirancang untuk membantu pelajar mengelola tugas, memantau progres belajar, dan meningkatkan fokus menggunakan teknik Pomodoro. Dengan antarmuka yang bersih dan intuitif, Impactus hadir sebagai ruang belajar digital yang produktif.
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+---
 
-Note: This will impact Vite dev & build performances.
-You can also try [the experimental native React Compiler support in plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md#rust-react-compiler) by using `compiler: true` in the plugin options instead of using the Babel plugin.
+## ✨ Fitur Utama
 
-## Expanding the ESLint configuration
+| Fitur | Deskripsi |
+|---|---|
+| 🏠 **Beranda** | Dashboard ringkasan tugas, statistik progres, dan tugas prioritas utama |
+| 📋 **Manajemen Tugas** | Tambah, kelola, dan tandai tugas berdasarkan prioritas & deadline |
+| ⏱️ **Timer Pomodoro** | Sesi belajar fokus 25 menit dengan jeda terstruktur |
+| 👤 **Profil** | Halaman profil pengguna |
+| 📱 **Responsif** | Tampilan optimal di desktop maupun perangkat mobile |
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 🛠️ Tech Stack
+
+- **Framework:** [React 19](https://react.dev/) + [Vite 8](https://vite.dev/)
+- **Routing:** [React Router DOM v7](https://reactrouter.com/)
+- **Linting:** ESLint
+
+---
+
+## 🚀 Cara Menjalankan Proyek
+
+### Prasyarat
+Pastikan sudah menginstal **Node.js** (v18 ke atas) dan **npm**.
+
+### Langkah Instalasi
+
+```bash
+# 1. Clone repositori ini
+git clone <url-repositori>
+cd capstone-impactus
+
+# 2. Install dependensi
+npm install
+
+# 3. Jalankan development server
+npm run dev
+```
+
+Buka browser dan akses: **`http://localhost:5173`**
+
+### Script yang Tersedia
+
+```bash
+npm run dev       # Menjalankan development server
+npm run build     # Build untuk produksi
+npm run preview   # Preview hasil build
+npm run lint      # Menjalankan ESLint
+```
+
+---
+
+## 📁 Struktur Proyek
+
+```
+capstone-impactus/
+├── public/                 # Aset statis
+├── src/
+│   ├── components/         # Komponen reusable (Header, Layout, dll.)
+│   ├── pages/              # Halaman utama (Beranda, Tugas, Timer, Profil)
+│   ├── data/               # Data statis (IceBreakers, dll.)
+│   ├── App.jsx             # Root komponen & konfigurasi routing
+│   ├── main.jsx            # Entry point aplikasi
+│   └── index.css           # Global styles
+├── index.html
+├── vite.config.js
+└── package.json
+```
+
+---
+
+## 👥 Tim Impactus
+
+| Nama | Peran |
+|---|---|
+| Aslam Fadholi Safkha | Mentor |
+| Nelson Saputra | Front-End Developer |
+| Zukovski Tangguh Dirgantara | Front-End Developer |
+| Visqya Pebriola Assyura | Front-End Developer |
+| Muhammad Finlandia Rahman Mawlaa | Front-End Developer |
+| Fil Ardhi | Front-End Developer |
+
+---
+
+## 📄 Lisensi
+
+Proyek ini proyek sederhana yang dibangun untuk memenuhi tugas Capstone Informatics Summit Bootcamp 2026 oleh Tim Impactus.
+
+---
+
+<p align="center">Dibuat dengan ❤️ oleh <strong>Tim Impactus</strong></p>
