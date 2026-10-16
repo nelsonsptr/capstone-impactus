@@ -10,6 +10,7 @@ export function InputTugas() {
   const [deskripsi, setDeskripsi] = useState('');
   const [tanggal, setTanggal] = useState('');
   const [waktu, setWaktu] = useState('');
+  const [prioritas, setPrioritas] = useState('Sedang');
   const [pesanPopup, setPesanPopup] = useState('');
 
   function handleSimpan(e) {
@@ -17,7 +18,7 @@ export function InputTugas() {
 
     if (!namaTugas.trim() || !tanggal || !waktu) {
       setPesanPopup(
-        'Nama tugas, tanggal dan waktu deadline wajib diisi.'
+        'Nama tugas, tanggal, dan waktu deadline wajib diisi.'
       );
       return;
     }
@@ -46,7 +47,7 @@ export function InputTugas() {
       status: 'Belum Selesai',
       deadline: tanggal,
       description: deskripsi.trim(),
-      priority: 'Sedang',
+      priority: prioritas,
       waktu: waktu,
     };
 
@@ -57,7 +58,12 @@ export function InputTugas() {
         'daftarTugas',
         JSON.stringify(dataBaru)
       );
-      navigate('/Tugas', { state: { pesan: 'Deadline tugas berhasil disimpan!' } });
+
+      navigate('/Tugas', {
+        state: {
+          pesan: 'Deadline tugas berhasil disimpan!',
+        },
+      });
     } catch (error) {
       console.error('Gagal menyimpan daftar tugas:', error);
       setPesanPopup('Tugas gagal disimpan. Silakan coba lagi.');
@@ -65,7 +71,11 @@ export function InputTugas() {
   }
 
   function handleBatal() {
-    navigate('/Tugas', { state: { pesan: 'Input deadline berhasil dibatalkan.' } });
+    navigate('/Tugas', {
+      state: {
+        pesan: 'Input deadline berhasil dibatalkan.',
+      },
+    });
   }
 
   function tutupPopup() {
@@ -100,6 +110,7 @@ export function InputTugas() {
             placeholder="Masukkan nama tugas"
             value={namaTugas}
             onChange={(e) => setNamaTugas(e.target.value)}
+            required
           />
         </div>
 
@@ -121,6 +132,7 @@ export function InputTugas() {
             type="date"
             value={tanggal}
             onChange={(e) => setTanggal(e.target.value)}
+            required
           />
         </div>
 
@@ -131,7 +143,22 @@ export function InputTugas() {
             type="time"
             value={waktu}
             onChange={(e) => setWaktu(e.target.value)}
+            required
           />
+        </div>
+
+        <div className="input-tugas-field">
+          <label htmlFor="prioritasTugas">Prioritas Tugas</label>
+          <select
+            id="prioritasTugas"
+            className="input-tugas-control"
+            value={prioritas}
+            onChange={(e) => setPrioritas(e.target.value)}
+          >
+            <option value="Tinggi">Tinggi</option>
+            <option value="Sedang">Sedang</option>
+            <option value="Rendah">Rendah</option>
+          </select>
         </div>
 
         <div className="input-tugas-actions">
@@ -168,3 +195,5 @@ export function InputTugas() {
     </section>
   );
 }
+
+export default InputTugas;

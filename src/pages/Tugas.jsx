@@ -1,11 +1,11 @@
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import './Tugas.css';
 
 function bacaDaftarTugas() {
   try {
-    const data = JSON.parse(
-      localStorage.getItem('daftarTugas') || '[]'
-    );
+    const data = JSON.parse(localStorage.getItem('daftarTugas') || '[]');
 
     if (!Array.isArray(data)) return [];
 
@@ -24,31 +24,35 @@ function bacaDaftarTugas() {
   }
 }
 
-export function Tugas(){
+export function Tugas() {
   const navigate = useNavigate();
   const location = useLocation();
 
   const [tasks, setTasks] = useState(bacaDaftarTugas);
   const [pesanPopup, setPesanPopup] = useState('');
+  const [konfirmasiHapus, setKonfirmasiHapus] = useState(null);
+  const [pesanHapus, setPesanHapus] = useState('');
 
-  // --- STATE UNTUK FITUR FILTER ---
   const [filterStatus, setFilterStatus] = useState('Semua');
   const [filterPriority, setFilterPriority] = useState('Semua');
 
-  // Tampilkan notifikasi yang dikirim dari halaman lain (misal InputTugas)
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentTask, setCurrentTask] = useState(null);
+
+  // Notifikasi dari halaman lain
   useEffect(() => {
     if (location.state?.pesan) {
       setPesanPopup(location.state.pesan);
-      // Bersihkan state agar tidak muncul lagi saat refresh
       window.history.replaceState({}, document.title);
     }
   }, [location.state]);
 
-  // --- STATE UNTUK MODAL EDIT ---
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentTask, setCurrentTask] = useState(null);
+  // Simpan daftar tugas
+  useEffect(() => {
+    localStorage.setItem('daftarTugas', JSON.stringify(tasks));
+  }, [tasks]);
 
-  // --- FITUR EDIT (MODAL) ---
+  // Edit tugas
   const handleOpenEditModal = (task) => {
     setCurrentTask({ ...task });
     setIsModalOpen(true);
@@ -62,7 +66,7 @@ export function Tugas(){
   const handleSaveEdit = (e) => {
     e.preventDefault();
 
-    if (!currentTask.title.trim()) return;
+    if (!currentTask?.title.trim()) return;
 
     setTasks((prevTasks) =>
       prevTasks.map((task) =>
@@ -71,283 +75,513 @@ export function Tugas(){
     );
 
     handleCloseModal();
+    setPesanPopup('Perubahan tugas berhasil disimpan.');
   };
 
-  useEffect(() => {
-    localStorage.setItem('daftarTugas', JSON.stringify(tasks));
-  }, [tasks]);
-
-  // --- FITUR UBAH STATUS TUGAS ---
+  // Ubah status
   const handleStatusChange = (id, newStatus) => {
-    setTasks(tasks.map((task) => task.id === id ? { ...task, status: newStatus } : task));
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === id ? { ...task, status: newStatus } : task
+      )
+    );
   };
 
-  // --- FITUR HAPUS TUGAS ---
+  // Hapus tugas dengan konfirmasi
   const handleDeleteTask = (id) => {
-    setTasks(tasks.filter((task) => task.id !== id));
-  };
+    const taskToDelete = tasks.find((task) => task.id === id);
 
-  // Helper untuk warna badge prioritas
-  const getPriorityBadgeClass = (priority) => {
-    switch (priority) {
-      case 'Tinggi':
-        return 'bg-red-100 text-red-700 border-red-200';
-      case 'Sedang':
-        return 'bg-amber-100 text-amber-700 border-amber-200';
-      case 'Rendah':
-        return 'bg-emerald-100 text-emerald-700 border-emerald-200';
-      default:
-        return 'bg-gray-100 text-gray-700 border-gray-200';
+    if (taskToDelete) {
+      setKonfirmasiHapus(taskToDelete);
     }
   };
 
-  // --- LOGIKA FILTER TUGAS ---
+  const konfirmasiHapusTask = () => {
+    if (!konfirmasiHapus) return;
+
+    setTasks((prevTasks) =>
+      prevTasks.filter((task) => task.id !== konfirmasiHapus.id)
+    );
+
+    setKonfirmasiHapus(null);
+    setPesanHapus('Tugas berhasil dihapus.');
+  };
+
+  const batalHapusTask = () => {
+    setKonfirmasiHapus(null);
+  };
+
+  // Class badge prioritas
+  const getPriorityBadgeClass = (priority) => {
+    switch (priority) {
+      case 'Tinggi':
+        return 'priority-high';
+      case 'Sedang':
+        return 'priority-medium';
+      case 'Rendah':
+        return 'priority-low';
+      default:
+        return 'priority-default';
+    }
+  };
+
+  // Filter tugas
   const filteredTasks = tasks.filter((task) => {
-    const matchStatus = filterStatus === 'Semua' || task.status === filterStatus;
-    const matchPriority = filterPriority === 'Semua' || task.priority === filterPriority;
+    const matchStatus =
+      filterStatus === 'Semua' || task.status === filterStatus;
+
+    const matchPriority =
+      filterPriority === 'Semua' || task.priority === filterPriority;
+
     return matchStatus && matchPriority;
   });
 
+  // Format tanggal
+  const formatDeadline = (deadline) => {
+    if (!deadline) return 'Tidak ditentukan';
+
+    const date = new Date(`${deadline}T00:00:00`);
+
+    if (Number.isNaN(date.getTime())) return deadline;
+
+    return date.toLocaleDateString('id-ID', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    });
+  };
+
   return (
-    <div className="max-w-xl mx-auto p-4">
-      {/* Header & Tombol Tambah */}
-      <div className="flex justify-between items-center w-full mb-4">
-        <h1 className="text-xl font-bold">Papan Daftar Tugas</h1>
+    <div className="tugas-page">
+      {/* Header */}
+      <header className="tugas-page-header">
+        <div>
+          <span className="tugas-eyebrow">MANAJEMEN BELAJAR</span>
+          <h1 className="tugas-page-title">Papan Daftar Tugas</h1>
+          <p className="tugas-page-description">
+            Atur prioritas, pantau progres, dan selesaikan tugasmu.
+          </p>
+        </div>
+
         <button
           type="button"
           onClick={() => navigate('/InputTugas')}
-          className="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-medium hover:bg-blue-700 transition-colors"
+          className="tugas-btn tugas-btn-primary"
         >
-          + Tambah Tugas
+          <span aria-hidden="true">+</span> Tambah Tugas
         </button>
-      </div>
+      </header>
 
-      {/* --- BARIS FILTER TUGAS --- */}
-      <div className="bg-gray-50 border border-gray-200 p-3 rounded mb-4 flex flex-wrap gap-3 items-center justify-between">
-        <span className="text-xs font-semibold text-gray-600">Filter Tugas:</span>
-        <div className="flex gap-2">
-          {/* Filter Status */}
-          <select
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-            className="border border-gray-300 p-1.5 rounded text-xs bg-white text-gray-700 cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-500"
-          >
-            <option value="Semua">Status: Semua</option>
-            <option value="Belum Selesai">Belum Selesai</option>
-            <option value="Dalam Proses">Dalam Proses</option>
-            <option value="Selesai">Selesai</option>
-          </select>
+      {/* Ringkasan */}
+      <section className="tugas-summary-grid">
+        <article className="tugas-summary-card">
+          <span className="tugas-summary-label">Total Tugas</span>
+          <strong className="tugas-summary-value">{tasks.length}</strong>
+        </article>
 
-          {/* Filter Prioritas */}
-          <select
-            value={filterPriority}
-            onChange={(e) => setFilterPriority(e.target.value)}
-            className="border border-gray-300 p-1.5 rounded text-xs bg-white text-gray-700 cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-500"
-          >
-            <option value="Semua">Prioritas: Semua</option>
-            <option value="Tinggi">Tinggi</option>
-            <option value="Sedang">Sedang</option>
-            <option value="Rendah">Rendah</option>
-          </select>
+        <article className="tugas-summary-card">
+          <span className="tugas-summary-label">Belum Selesai</span>
+          <strong className="tugas-summary-value">
+            {tasks.filter((task) => task.status === 'Belum Selesai').length}
+          </strong>
+        </article>
+
+        <article className="tugas-summary-card">
+          <span className="tugas-summary-label">Dalam Proses</span>
+          <strong className="tugas-summary-value">
+            {tasks.filter((task) => task.status === 'Dalam Proses').length}
+          </strong>
+        </article>
+
+        <article className="tugas-summary-card">
+          <span className="tugas-summary-label">Selesai</span>
+          <strong className="tugas-summary-value tugas-value-success">
+            {tasks.filter((task) => task.status === 'Selesai').length}
+          </strong>
+        </article>
+      </section>
+
+      {/* Filter */}
+      <section className="tugas-filter-panel">
+        <div className="tugas-filter-heading">
+          <div>
+            <h2 className="tugas-section-title">Daftar Tugas</h2>
+            <p className="tugas-muted">
+              Menampilkan {filteredTasks.length} dari {tasks.length} tugas
+            </p>
+          </div>
         </div>
-      </div>
 
-      {/* DAFTAR TUGAS */}
-      <div className="space-y-3">
-        {filteredTasks.map((task) => (
-          <div
-            key={task.id}
-            className="p-3 border border-gray-200 rounded bg-white space-y-2 shadow-sm hover:shadow transition-shadow"
+        <div className="tugas-filter-controls">
+          <label className="tugas-filter-field">
+            <span>Status</span>
+            <select
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+              className="form-control"
+            >
+              <option value="Semua">Semua Status</option>
+              <option value="Belum Selesai">Belum Selesai</option>
+              <option value="Dalam Proses">Dalam Proses</option>
+              <option value="Selesai">Selesai</option>
+            </select>
+          </label>
+
+          <label className="tugas-filter-field">
+            <span>Prioritas</span>
+            <select
+              value={filterPriority}
+              onChange={(e) => setFilterPriority(e.target.value)}
+              className="form-control"
+            >
+              <option value="Semua">Semua Prioritas</option>
+              <option value="Tinggi">Tinggi</option>
+              <option value="Sedang">Sedang</option>
+              <option value="Rendah">Rendah</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+      {/* Pesan setelah hapus */}
+      {pesanHapus && (
+        <div className="tugas-inline-notice" role="status">
+          <span>{pesanHapus}</span>
+          <button
+            type="button"
+            onClick={() => setPesanHapus('')}
+            aria-label="Tutup notifikasi"
           >
-            {/* Header Tugas: Badge Prioritas, Judul, & Tombol Aksi */}
-            <div className="flex items-start justify-between gap-2">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2">
-                  <span
-                    className={`text-[10px] px-2 py-0.5 rounded border font-semibold ${getPriorityBadgeClass(
-                      task.priority
-                    )}`}
-                  >
-                    {task.priority}
-                  </span>
-                  <p
-                    className={`text-sm font-medium ${
-                      task.status === 'Selesai'
-                        ? 'line-through text-gray-400'
-                        : 'text-gray-800'
-                    }`}
-                  >
-                    {task.title}
-                  </p>
-                </div>
+            ×
+          </button>
+        </div>
+      )}
 
-                {/* Deskripsi Tugas */}
-                {task.description && (
-                  <p className="text-xs text-gray-600">{task.description}</p>
-                )}
+      {/* Daftar tugas */}
+      <section className="tugas-list">
+        {filteredTasks.map((task) => (
+          <article
+            key={task.id}
+            className={`tugas-card ${
+              task.status === 'Selesai' ? 'tugas-card-completed' : ''
+            }`}
+          >
+            <div className="tugas-card-main">
+              <div className="tugas-card-badges">
+                <span
+                  className={`tugas-priority-badge ${getPriorityBadgeClass(
+                    task.priority
+                  )}`}
+                >
+                  <span className="tugas-badge-dot" />
+                  Prioritas {task.priority}
+                </span>
+
+                <span
+                  className={`tugas-status-badge ${
+                    task.status === 'Selesai'
+                      ? 'status-completed'
+                      : task.status === 'Dalam Proses'
+                        ? 'status-progress'
+                        : 'status-pending'
+                  }`}
+                >
+                  {task.status}
+                </span>
               </div>
 
-              {/* Aksi (Edit, Status, Hapus) */}
-              <div className="flex items-center gap-1.5 shrink-0">
-                <button
-                  onClick={() => handleOpenEditModal(task)}
-                  className="bg-amber-500 text-white px-2 py-1 rounded text-xs hover:bg-amber-600 transition-colors"
-                >
-                  Edit
-                </button>
+              <h3 className="tugas-card-title">{task.title || 'Tanpa Judul'}</h3>
 
+              {task.description && (
+                <p className="tugas-card-description">{task.description}</p>
+              )}
+
+              <div className="tugas-card-deadline">
+                <span aria-hidden="true">▦</span>
+                <span>
+                  Deadline: <strong>{formatDeadline(task.deadline)}</strong>
+                </span>
+                {task.waktu && <span>• {task.waktu}</span>}
+              </div>
+            </div>
+
+            <div className="tugas-card-actions">
+              <label className="tugas-status-field">
+                <span>Status tugas</span>
                 <select
                   value={task.status}
-                  onChange={(e) => handleStatusChange(task.id, e.target.value)}
-                  className="border border-gray-300 p-1 rounded text-xs bg-gray-50 cursor-pointer"
+                  onChange={(e) =>
+                    handleStatusChange(task.id, e.target.value)
+                  }
+                  className="form-control"
+                  aria-label={`Status tugas ${task.title}`}
                 >
                   <option value="Belum Selesai">Belum Selesai</option>
                   <option value="Dalam Proses">Dalam Proses</option>
                   <option value="Selesai">Selesai</option>
                 </select>
+              </label>
+
+              <div className="tugas-action-buttons">
+                <button
+                  type="button"
+                  onClick={() => handleOpenEditModal(task)}
+                  className="tugas-btn tugas-btn-secondary"
+                >
+                  Edit
+                </button>
 
                 <button
+                  type="button"
                   onClick={() => handleDeleteTask(task.id)}
-                  className="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600 transition-colors"
+                  className="tugas-btn tugas-btn-danger-outline"
                 >
                   Hapus
                 </button>
               </div>
             </div>
-
-            {/* Footer Tugas: Tanggal Deadline */}
-            <div className="text-[11px] text-gray-500 border-t border-gray-100 pt-1.5">
-              Deadline: <span className="font-medium text-gray-700">{task.deadline}</span>
-            </div>
-          </div>
+          </article>
         ))}
 
-        {/* Jika Tidak Ada Tugas yang Cocok */}
         {filteredTasks.length === 0 && (
-          <div className="text-center py-8 border border-dashed border-gray-300 rounded">
-            <p className="text-gray-400 text-sm">
+          <div className="tugas-empty-state">
+            <div className="tugas-empty-icon" aria-hidden="true">
+              {tasks.length === 0 ? '📝' : '🔎'}
+            </div>
+            <h3>
               {tasks.length === 0
-                ? 'Belum ada tugas.'
-                : 'Tidak ada tugas yang sesuai dengan filter ini.'}
+                ? 'Belum ada tugas'
+                : 'Tidak ada tugas yang cocok'}
+            </h3>
+            <p>
+              {tasks.length === 0
+                ? 'Tambahkan tugas pertamamu untuk mulai mengatur aktivitas belajar.'
+                : 'Coba ubah filter status atau prioritas untuk melihat tugas lainnya.'}
             </p>
+
+            {tasks.length === 0 && (
+              <button
+                type="button"
+                onClick={() => navigate('/InputTugas')}
+                className="tugas-btn tugas-btn-primary"
+              >
+                + Tambah Tugas
+              </button>
+            )}
           </div>
         )}
-      </div>
+      </section>
 
-      {/* --- POP-UP FORM / MODAL EDIT TUGAS --- */}
+      {/* Modal Edit */}
       {isModalOpen && currentTask && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg p-5 w-full max-w-sm shadow-lg border border-gray-200">
-            <h2 className="text-base font-bold text-gray-800 mb-3">Edit Tugas</h2>
-
-            <form onSubmit={handleSaveEdit} className="space-y-3">
-              {/* Field 1: Nama Tugas */}
+        <div
+          className="tugas-modal-overlay"
+          onClick={handleCloseModal}
+        >
+          <section
+            className="tugas-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="judulEditTugas"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="tugas-modal-header">
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1">
-                  Nama Tugas
-                </label>
+                <span className="tugas-eyebrow">MANAJEMEN TUGAS</span>
+                <h2 id="judulEditTugas" className="tugas-modal-title">
+                  Edit Tugas
+                </h2>
+              </div>
+              <button
+                type="button"
+                className="tugas-modal-close"
+                onClick={handleCloseModal}
+                aria-label="Tutup modal"
+              >
+                ×
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveEdit} className="tugas-modal-form">
+              <label className="tugas-form-field">
+                <span>Nama Tugas</span>
                 <input
                   type="text"
                   value={currentTask.title}
                   onChange={(e) =>
-                    setCurrentTask({ ...currentTask, title: e.target.value })
+                    setCurrentTask({
+                      ...currentTask,
+                      title: e.target.value,
+                    })
                   }
-                  className="w-full border border-gray-300 p-2 rounded text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="form-control"
                   required
                 />
-              </div>
+              </label>
 
-              {/* Field 2: Deskripsi Tugas */}
-              <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1">
-                  Deskripsi Tugas
-                </label>
+              <label className="tugas-form-field">
+                <span>Deskripsi Tugas</span>
                 <textarea
-                  rows="2"
+                  rows={3}
                   value={currentTask.description}
                   onChange={(e) =>
-                    setCurrentTask({ ...currentTask, description: e.target.value })
+                    setCurrentTask({
+                      ...currentTask,
+                      description: e.target.value,
+                    })
                   }
-                  className="w-full border border-gray-300 p-2 rounded text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="form-control"
                   placeholder="Tambahkan penjelasan singkat..."
                 />
-              </div>
+              </label>
 
-              {/* Field 3: Prioritas */}
-              <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1">
-                  Prioritas
-                </label>
+              <label className="tugas-form-field">
+                <span>Prioritas</span>
                 <select
                   value={currentTask.priority}
                   onChange={(e) =>
-                    setCurrentTask({ ...currentTask, priority: e.target.value })
+                    setCurrentTask({
+                      ...currentTask,
+                      priority: e.target.value,
+                    })
                   }
-                  className="w-full border border-gray-300 p-2 rounded text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white cursor-pointer"
+                  className="form-control"
                 >
                   <option value="Tinggi">Tinggi</option>
                   <option value="Sedang">Sedang</option>
                   <option value="Rendah">Rendah</option>
                 </select>
-              </div>
+              </label>
 
-              {/* Field 4: Tanggal Deadline */}
-              <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1">
-                  Tanggal Deadline
-                </label>
+              <label className="tugas-form-field">
+                <span>Tanggal Deadline</span>
                 <input
                   type="date"
                   value={currentTask.deadline}
                   onChange={(e) =>
-                    setCurrentTask({ ...currentTask, deadline: e.target.value })
+                    setCurrentTask({
+                      ...currentTask,
+                      deadline: e.target.value,
+                    })
                   }
-                  className="w-full border border-gray-300 p-2 rounded text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="form-control"
                   required
                 />
-              </div>
+              </label>
 
-              {/* Tombol Aksi Modal */}
-              <div className="flex justify-end gap-2 pt-2">
+              <div className="tugas-modal-actions">
                 <button
                   type="button"
                   onClick={handleCloseModal}
-                  className="px-3 py-1.5 border border-gray-300 text-gray-600 rounded text-xs hover:bg-gray-100"
+                  className="btn btn-secondary"
                 >
                   Batal
                 </button>
-                <button
-                  type="submit"
-                  className="px-3 py-1.5 bg-blue-600 text-white rounded text-xs font-medium hover:bg-blue-700"
-                >
-                  Simpan
+                <button type="submit" className="btn btn-primary">
+                  Simpan Perubahan
                 </button>
               </div>
             </form>
-          </div>
+          </section>
         </div>
       )}
 
-      {/* Popup Notifikasi */}
+      {/* Modal notifikasi */}
       {pesanPopup && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div
-            className="bg-white rounded-lg p-5 w-full max-w-xs shadow-lg border border-gray-200"
+        <div
+          className="tugas-modal-overlay"
+          onClick={() => setPesanPopup('')}
+        >
+          <section
+            className="tugas-modal tugas-notification-modal"
             role="dialog"
             aria-modal="true"
+            aria-labelledby="judulPemberitahuan"
+            onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="text-base font-bold text-gray-800 mb-2">Pemberitahuan</h2>
-            <p className="text-sm text-gray-600 mb-4">{pesanPopup}</p>
-            <div className="flex justify-end">
+            <div className="tugas-modal-header">
+              <h2 id="judulPemberitahuan" className="tugas-modal-title">
+                Pemberitahuan
+              </h2>
+              <button
+                type="button"
+                className="tugas-modal-close"
+                onClick={() => setPesanPopup('')}
+                aria-label="Tutup pemberitahuan"
+              >
+                ×
+              </button>
+            </div>
+
+            <p className="tugas-modal-message">{pesanPopup}</p>
+
+            <div className="tugas-modal-actions">
               <button
                 type="button"
                 onClick={() => setPesanPopup('')}
-                className="px-4 py-1.5 bg-blue-600 text-white rounded text-xs font-medium hover:bg-blue-700"
+                className="btn btn-primary"
               >
                 Oke
               </button>
             </div>
-          </div>
+          </section>
+        </div>
+      )}
+
+      {/* Modal konfirmasi hapus */}
+      {konfirmasiHapus && (
+        <div
+          className="tugas-modal-overlay"
+          onClick={batalHapusTask}
+        >
+          <section
+            className="tugas-modal"
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="judulKonfirmasiHapus"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="tugas-modal-header">
+              <h2
+                id="judulKonfirmasiHapus"
+                className="tugas-modal-title"
+              >
+                Konfirmasi Hapus
+              </h2>
+              <button
+                type="button"
+                className="tugas-modal-close"
+                onClick={batalHapusTask}
+                aria-label="Tutup konfirmasi"
+              >
+                ×
+              </button>
+            </div>
+
+            <p className="tugas-modal-message">
+              Apakah kamu yakin ingin menghapus tugas{' '}
+              <strong>{konfirmasiHapus.title || 'Tanpa Judul'}</strong>?
+              Tindakan ini tidak dapat dibatalkan.
+            </p>
+
+            <div className="tugas-modal-actions">
+              <button
+                type="button"
+                onClick={batalHapusTask}
+                className="btn btn-secondary"
+              >
+                Batal
+              </button>
+
+              <button
+                type="button"
+                onClick={konfirmasiHapusTask}
+                className="tugas-btn tugas-btn-danger"
+              >
+                Ya, Hapus
+              </button>
+            </div>
+          </section>
         </div>
       )}
     </div>
